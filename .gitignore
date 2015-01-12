@@ -1,0 +1,190 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+using System.Net;
+
+namespace test
+{
+    class Program{
+    static void ToDrow(int mistakes){
+     
+        switch (mistakes)
+        {
+            case 1:
+                {
+                    
+                    Console.WriteLine("-------------");
+                    Console.WriteLine("      |      ");
+                    break;
+                }
+            case 2: {
+               
+                Console.WriteLine("-------------");
+                Console.WriteLine("      |      ");
+                Console.WriteLine("     ( )     ");
+                break;
+            }
+            case 3:
+                {
+                    
+                    Console.WriteLine("-------------");
+                    Console.WriteLine("      |      ");
+                    Console.WriteLine("     ( )     ");
+                    Console.WriteLine("      |      ");
+                    Console.WriteLine("      |      ");
+                    break;
+                }
+            case 4:
+                {
+                    
+                    Console.WriteLine("-------------");
+                    Console.WriteLine("      |      ");
+                    Console.WriteLine("     ( )     ");
+                    Console.WriteLine("      |      ");
+                    Console.WriteLine("      |      ");
+                    Console.WriteLine("     / \\     ");
+                    
+                    break;
+                }
+            case 5:
+                {
+                   
+                    Console.WriteLine("-------------");
+                    Console.WriteLine("      |      ");
+                    Console.WriteLine("     ( )     ");
+                    Console.WriteLine("    __|__    ");
+                    Console.WriteLine("      |      ");
+                    Console.WriteLine("     / \\     ");
+                   
+                    break;
+                }
+            default:
+                break;
+        }
+        
+        
+       
+    
+    }
+        public static string WordToGess(){
+
+            WebClient client = new WebClient();
+            string htmlCode = client.DownloadString("http://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29");
+            string pattern = @"[A-Za-z]{5,}";
+            Regex rgx = new Regex(pattern);
+            MatchCollection matches = rgx.Matches(htmlCode);
+
+            string[] mcArray = new string[matches.Count];
+            for (int i = 0; i < matches.Count; i++)
+            {
+                mcArray[i] = matches[i].Groups[0].Value;
+            }
+            Random random = new Random();
+
+            string toGuess = matches[random.Next(0, matches.Count)].Groups[0].Value.ToUpper();
+            Console.WriteLine("----------------------{0}", toGuess);
+            
+            return toGuess;
+
+    }
+        public static char[] HidLet(string toGuess, char hiddenLetter){
+            
+            char[] hiddenWord = new char[toGuess.Length];
+          //String a=new String(hiddenLetter, toGuess.Length);
+          //return  a.ToCharArray();
+          
+            return (new String(hiddenLetter, toGuess.Length)).ToCharArray();
+            
+            
+            //for (int i = 0; i < hiddenWord.Length; i++)
+            //{
+            //    hiddenWord[i] = hiddenLetter;
+            //}
+            //return hiddenWord;
+}
+        public static bool IsGame(string toGuess, char[] hiddenWord, char myletter)
+        {
+            int guessedLetters = 0;
+            bool isGameOver = false;
+            for (int i = 0; i < toGuess.Length; i++)
+            {
+                if (toGuess[i] == myletter)
+                {
+                    hiddenWord[i] = myletter;
+
+                }
+
+                if (toGuess[i] == hiddenWord[i])
+                {
+                    guessedLetters++;
+                }
+
+            }
+
+            if (guessedLetters == toGuess.Length)
+            {
+                isGameOver = true;
+            }
+            return isGameOver;
+        }
+
+       
+        public static void Main()
+        {
+          
+            string toGuess= WordToGess();         
+            char[] hiddenWord = HidLet(toGuess,'_');
+
+            bool isGameOver = false;
+            int count = 0;
+            int mistakes = 0;
+            while (!isGameOver)
+            {
+
+                count++;
+                int leftTimes = hiddenWord.Length + 6 - count;
+                Console.WriteLine("You guess {0} times ", leftTimes);
+                if (mistakes != 5)
+                {
+
+                    string currentWordToGuess = string.Join(" ", hiddenWord);
+                    Console.WriteLine("Guess word from HTML sourse:\t{0}", currentWordToGuess);
+
+                    Console.WriteLine("Enter a letter!");
+                    char myletter = char.Parse(Console.ReadLine().ToUpper());
+
+                    if (toGuess.Contains(myletter))
+                    {
+                        isGameOver = IsGame(toGuess, hiddenWord, myletter);
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        mistakes++;
+                        Console.WriteLine("\n You guessed wrong!------Your Mistakes:{0}-----max Mistakes:5 \n", mistakes);
+
+                        ToDrow(mistakes);
+                    }
+
+                    if (isGameOver)
+                    {
+                        Console.WriteLine("Congratulation!");
+                        Console.WriteLine("The word is: {0}", toGuess);
+                    }
+
+                }
+                else
+                {
+                    Console.WriteLine("\n\n--------------GAME OVER!!!--------------\n\n");
+                    Console.WriteLine("The word is: {0}", toGuess);
+                    break;
+                }
+            }
+
+        }
+    }
+}
+    
