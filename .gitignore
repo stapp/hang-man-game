@@ -93,17 +93,12 @@ namespace test
         public static char[] HidLet(string toGuess, char hiddenLetter){
             
             char[] hiddenWord = new char[toGuess.Length];
-          //String a=new String(hiddenLetter, toGuess.Length);
-          //return  a.ToCharArray();
+          
           
             return (new String(hiddenLetter, toGuess.Length)).ToCharArray();
             
             
-            //for (int i = 0; i < hiddenWord.Length; i++)
-            //{
-            //    hiddenWord[i] = hiddenLetter;
-            //}
-            //return hiddenWord;
+          
 }
         public static bool IsGame(string toGuess, char[] hiddenWord, char myletter)
         {
